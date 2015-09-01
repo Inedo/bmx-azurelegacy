@@ -49,7 +49,7 @@ namespace Inedo.BuildMasterExtensions.Azure
                 if (this.TestConfigurer != null)
                     return fileOps.ReadAllText(configFile);
 
-                var tree = VariableExpressionTree.Parse(configFile, Domains.VariableSupportCodes.All);
+                var tree = VariableExpressionTree.Parse(fileOps.ReadAllText(configFile), Domains.VariableSupportCodes.All);
                 var variableContext = (IVariableEvaluationContext)Activator.CreateInstance(Type.GetType("Inedo.BuildMaster.Variables.StandardVariableEvaluationContext,BuildMaster"), (IGenericBuildMasterContext)this.Context, this.Context.Variables);
                 return tree.Evaluate(variableContext);
             }
