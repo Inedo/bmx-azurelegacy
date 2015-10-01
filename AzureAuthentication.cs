@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
@@ -14,51 +16,53 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         public string ConfigFileName { get; set; }
 
-        public bool HasCertificate
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(PEMENcoded) || !string.IsNullOrEmpty(CertificateName) || !string.IsNullOrEmpty(ConfigFileName);
-            }
-        }
+        public bool HasCertificate => !string.IsNullOrEmpty(this.PEMENcoded) || !string.IsNullOrEmpty(this.CertificateName) || !string.IsNullOrEmpty(this.ConfigFileName);
 
         public X509Certificate2 Certificate
         {
             get
             {
                 if (!string.IsNullOrEmpty(this.PEMENcoded))
-                {
-                    return GetFromString(this.PEMENcoded);
-                }
+                    return this.GetCertificateFromString(this.PEMENcoded);
+
                 if (!string.IsNullOrEmpty(this.CertificateName))
-                {
-                    return GetByNameFromCertStore(this.CertificateName);
-                }
+                    return this.GetCertificateFromStore(this.CertificateName);
+
                 return null;
             }
         }
 
-        internal X509Certificate2 GetByNameFromCertStore(string Name)
+        internal X509Certificate2 GetCertificateFromStore(string name)
         {
             var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
             try
             {
                 store.Open(OpenFlags.ReadOnly);
-                var certs = store.Certificates.Find(X509FindType.FindBySubjectName, Name, false);
-                store.Close();
-                if (0 == certs.Count)
-                    throw new Exception(string.Format("Cannot find certificate named {0} in machine store", Name));
+                var certs = store.Certificates.Find(X509FindType.FindBySubjectName, name, false);
+
+                if (certs.Count == 0)
+                    throw new InvalidOperationException($"Cannot find a certificate named \"{name}\" in the machine store.");
+
                 return certs[0];
             }
-            catch (Exception)
+            finally
             {
-                throw;
+                store.Close();
             }
         }
 
-        internal X509Certificate2 GetFromString(string Value)
+        internal X509Certificate2 GetCertificateFromString(string pemEncodedCertificate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var file = Path.GetTempFileName();
+                File.WriteAllText(file, pemEncodedCertificate, Encoding.ASCII);
+                return new X509Certificate2(file);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred decoding the certificate from its PEM-encoded value, error was: " + ex.Message, ex);
+            }
         }
     }
 }

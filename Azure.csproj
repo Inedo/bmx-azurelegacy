@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="AzureAction.cs" />
     <Compile Include="AzureAuthentication.cs" />
+    <Compile Include="Compute\AzureAuthenticationVariableReplacer.cs" />
     <Compile Include="AzureConfigurer.cs" />
     <Compile Include="AzureConfigurerEditor.cs">
       <SubType>ASPXCodeBehind</SubType>

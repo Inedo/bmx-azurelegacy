@@ -22,7 +22,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         protected static string OperationVersion = "2012-03-01";
         protected static XNamespace ns = "http://schemas.microsoft.com/windowsazure";
 
-        [Persistent]
+        [Persistent(CustomVariableReplacer = typeof(AzureAuthenticationVariableReplacer))]
         public AzureAuthentication ActionCredentials { get; set; }
 
         protected AzureConfigurer Configurer
@@ -52,16 +52,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             }
         }
 
-        protected AzureAuthentication Credentials
-        {
-            get
-            {
-                // use local first
-                if (null != ActionCredentials)
-                    return ActionCredentials;
-                return Configurer.Credentials;
-            }
-        }
+        protected AzureAuthentication Credentials => this.ActionCredentials ?? this.Configurer.Credentials;
 
         protected string ResolveDirectory(string filePath)
         {
