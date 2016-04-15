@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Net;
 using System.Text;
-using Inedo.BuildMaster;
 using Inedo.BuildMaster.Web;
+using Inedo.Documentation;
 using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
