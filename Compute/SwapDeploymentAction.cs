@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Net;
-using System.IO;
-using Microsoft.WindowsAzure;
+using System.Text;
 using Inedo.BuildMaster;
-using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Web;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    [ActionProperties(
-        "Swap Deployment",
-        "Swaps a production and staging deployment in Windows Azure.")]
+    [DisplayName("Swap Deployment")]
+    [Description("Swaps a production and staging deployment in Windows Azure.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(SwapDeploymentActionEditor))]
-    public class SwapDeploymentAction : AzureComputeActionBase  
+    public class SwapDeploymentAction : AzureComputeActionBase
     {
+        public SwapDeploymentAction()
+        {
+            this.UsesServiceName = true;
+            this.UsesWaitForCompletion = true;
+        }
 
         [Persistent]
         public string ProductionDeploymentName { get; set; }
@@ -29,17 +29,6 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             return string.Format("Swapping production deployment {0} with {1} package for the {2} service in subscription {3}",
                 this.ProductionDeploymentName, this.SourceDeploymentName, this.ServiceName, this.Credentials.SubscriptionID);
-        }
-
-        public SwapDeploymentAction()
-        {
-            this.UsesServiceName = true;
-            this.UsesWaitForCompletion = true;
-        }
-
-        internal string Test()
-        {
-            return this.ProcessRemoteCommand(null, null);
         }
 
         protected override void Execute()
@@ -65,7 +54,7 @@ namespace Inedo.BuildMasterExtensions.Azure
                 this.ServiceName);
             if (HttpStatusCode.Accepted != resp.StatusCode)
             {
-                LogError("Error swapping production deployment {0} with {1} in service {2} . Error code is: {3}, error description: {4}", 
+                LogError("Error swapping production deployment {0} with {1} in service {2} . Error code is: {3}, error description: {4}",
                     this.ProductionDeploymentName, this.SourceDeploymentName, this.ServiceName, resp.ErrorCode, resp.ErrorMessage);
                 return null;
             }
@@ -117,10 +106,10 @@ namespace Inedo.BuildMasterExtensions.Azure
             return body.ToString();
         }
 
-        private sealed class DeploymentNames 
+        private sealed class DeploymentNames
         {
             public string Production { get; set; }
-            public string Source {get; set;}
+            public string Source { get; set; }
         }
     }
 }

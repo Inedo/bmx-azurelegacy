@@ -74,7 +74,6 @@ namespace Inedo.BuildMasterExtensions.Azure
             ProgressStream pstream = new ProgressStream(fs);
             pstream.ProgressChanged += pstream_ProgressChanged;
             pstream.SetLength(fileSize);
-            this.blob.ServiceClient.ParallelOperationThreadCount = 10;
             asyncresult = this.blob.BeginUploadFromStream(pstream, BlobTransferCompletedCallback, new BlobTransferAsyncState(this.blob, pstream));
             return asyncresult;
         }
@@ -106,7 +105,6 @@ namespace Inedo.BuildMasterExtensions.Azure
             ProgressStream pstream = new ProgressStream(fs);
             pstream.ProgressChanged += pstream_ProgressChanged;
             pstream.SetLength(this.blob.Properties.Length);
-            this.blob.ServiceClient.ParallelOperationThreadCount = 10;
             asyncresult = this.blob.BeginDownloadToStream(pstream, BlobTransferCompletedCallback, new BlobTransferAsyncState(this.blob, pstream));
             return asyncresult;
         }

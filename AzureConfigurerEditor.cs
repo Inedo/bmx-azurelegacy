@@ -49,14 +49,9 @@ namespace Inedo.BuildMasterExtensions.Azure
         protected override void OnInit(EventArgs e)
         {
             this.Controls.Add(
-                new FormFieldGroup("SDK", "The location of the Windows Azure SDK bin directory.", false,
-                    new StandardFormField("Path:", sdkPath)
-                ),
-                new FormFieldGroup("Authentication", "Authentication Information used for all Windows Azure actions unless overridden in the action.",
-                    true,
-                    new StandardFormField("Subscription ID:", txtSubscriptionID),
-                    new StandardFormField("Certificate Name:", txtCertificateName)
-                )
+                new SlimFormField("SDK path:", sdkPath),
+                new SlimFormField("Subscription ID:", txtSubscriptionID),
+                new SlimFormField("Certificate Name:", txtCertificateName)
             );
 
             base.OnInit(e);

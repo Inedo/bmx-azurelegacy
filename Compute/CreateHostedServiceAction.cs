@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Net;
-using System.Web;
-
+using System.Text;
 using Inedo.BuildMaster;
-using Inedo.BuildMaster.Extensibility.Actions;
+using Inedo.BuildMaster.Documentation;
 using Inedo.BuildMaster.Web;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    [ActionProperties(
-        "Create Hosted Service",
-        "Creates a new cloud service in Windows Azure.")]
+    [DisplayName("Create Hosted Service")]
+    [Description("Creates a new cloud service in Windows Azure.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(CreateHostedServiceActionEditor))]
-    public class CreateHostedServiceAction : AzureComputeActionBase  
+    public class CreateHostedServiceAction : AzureComputeActionBase
     {
+        public CreateHostedServiceAction()
+        {
+            this.UsesServiceName = true;
+            this.UsesWaitForCompletion = true;
+            this.UsesExtendedProperties = true;
+        }
 
         [Persistent]
         public string Label { get; set; }
@@ -31,21 +33,18 @@ namespace Inedo.BuildMasterExtensions.Azure
         [Persistent]
         public string AffinityGroup { get; set; }
 
-        public override string ToString()
+        public override ExtendedRichDescription GetActionDescription()
         {
-            return string.Format("Creating cloud service {0} for subscription {1}", this.ServiceName, this.Credentials.SubscriptionID);
-        }
-
-        public CreateHostedServiceAction()
-        {
-            this.UsesServiceName = true;
-            this.UsesWaitForCompletion = true;
-            this.UsesExtendedProperties = true;
-        }
-
-        internal string Test()
-        {
-            return this.ProcessRemoteCommand(null, null);
+            return new ExtendedRichDescription(
+                new RichDescription(
+                    "Create cloud service ",
+                    new Hilite(this.ServiceName)
+                ),
+                new RichDescription(
+                    "for subscription ",
+                    new Hilite(this.Credentials?.SubscriptionID)
+                )
+            );
         }
 
         protected override void Execute()
@@ -57,16 +56,16 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             string requestID = string.Empty;
             requestID = MakeRequest();
-            if(string.IsNullOrEmpty(requestID))
+            if (string.IsNullOrEmpty(requestID))
                 return null;
-            if(this.WaitForCompletion)
+            if (this.WaitForCompletion)
                 this.WaitForRequestCompletion(requestID);
             return requestID;
         }
 
         internal string MakeRequest()
         {
-            var resp = AzureRequest(RequestType.Post, BuildRequestDocument(),"https://management.core.windows.net/{0}/services/hostedservices");
+            var resp = AzureRequest(RequestType.Post, BuildRequestDocument(), "https://management.core.windows.net/{0}/services/hostedservices");
             if (HttpStatusCode.Created != resp.StatusCode)
             {
                 LogError("Error creating Hosted Service named {0}. Error code is: {1}, error description: {2}", this.ServiceName, resp.ErrorCode, resp.ErrorMessage);
@@ -79,17 +78,16 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             StringBuilder body = new StringBuilder();
             body.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<CreateHostedService xmlns=\"http://schemas.microsoft.com/windowsazure\">");
-            body.AppendFormat("<ServiceName>{0}</ServiceName>\r\n",this.ServiceName);
+            body.AppendFormat("<ServiceName>{0}</ServiceName>\r\n", this.ServiceName);
             body.AppendFormat("<Label>{0}</Label>\r\n", Base64Encode(this.Label));
-            body.AppendFormat("<Description>{0}</Description>\r\n",this.Description);
-            if(!string.IsNullOrEmpty(this.Location))
-                body.AppendFormat("<Location>{0}</Location>\r\n",this.Location);
+            body.AppendFormat("<Description>{0}</Description>\r\n", this.Description);
+            if (!string.IsNullOrEmpty(this.Location))
+                body.AppendFormat("<Location>{0}</Location>\r\n", this.Location);
             else
-                body.AppendFormat("<AffinityGroup>{0}</AffinityGroup>\r\n",this.AffinityGroup);
+                body.AppendFormat("<AffinityGroup>{0}</AffinityGroup>\r\n", this.AffinityGroup);
             body.Append(ParseExtendedProperties());
             body.Append("</CreateHostedService>\r\n");
             return body.ToString();
         }
-
     }
 }

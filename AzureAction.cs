@@ -9,8 +9,10 @@ using System.Xml;
 using System.Xml.Linq;
 using Inedo.BuildMaster;
 using Inedo.BuildMaster.Data;
+using Inedo.BuildMaster.Extensibility;
 using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Extensibility.Agents;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
@@ -22,7 +24,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         protected static string OperationVersion = "2012-03-01";
         protected static XNamespace ns = "http://schemas.microsoft.com/windowsazure";
 
-        [Persistent(CustomVariableReplacer = typeof(AzureAuthenticationVariableReplacer))]
+        [Persistent]
         public AzureAuthentication ActionCredentials { get; set; }
 
         protected AzureConfigurer Configurer
@@ -37,17 +39,14 @@ namespace Inedo.BuildMasterExtensions.Azure
                 {
                     var typ = typeof(AzureConfigurer);
 
-                    var profiles = StoredProcs
-                        .ExtensionConfiguration_GetConfigurations(typ.FullName + "," + typ.Assembly.GetName().Name)
-                        .Execute();
+                    var profiles = DB.ExtensionConfiguration_GetConfigurations(typ.FullName + "," + typ.Assembly.GetName().Name);
 
-                    var configurer =
-                        profiles.FirstOrDefault(p => p.Default_Indicator.Equals(Domains.YN.Yes)) ?? profiles.FirstOrDefault();
+                    var configurer = profiles.FirstOrDefault(p => p.Default_Indicator) ?? profiles.FirstOrDefault();
 
                     if (configurer == null)
                         return null;
 
-                    return (AzureConfigurer)Util.Persistence.DeserializeFromPersistedObjectXml(configurer.Extension_Configuration);
+                    return (AzureConfigurer)Persistence.DeserializeFromPersistedObjectXml(configurer.Extension_Configuration);
                 }
             }
         }
@@ -59,7 +58,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             using (var agent = Util.Agents.CreateLocalAgent())
             {
                 var fileOps = agent.GetService<IFileOperationsExecuter>();
-                var directory = fileOps.GetWorkingDirectory(this.Context.ApplicationId, this.Context.DeployableId ?? 0, filePath);
+                var directory = Path.Combine(fileOps.GetExecutionBaseDirectory((IGenericBuildMasterContext)this.Context), filePath);
 
                 this.LogDebug("Resolved directory: " + directory);
                 return directory;

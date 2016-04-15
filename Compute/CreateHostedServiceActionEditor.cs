@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.UI.WebControls;
-using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
-using Inedo.BuildMaster.Web.Controls.Extensions;
+﻿using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.Web.Controls;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    internal sealed class CreateHostedServiceActionEditor : AzureComputeActionBaseEditor 
+    internal sealed class CreateHostedServiceActionEditor : AzureComputeActionBaseEditor
     {
         private ValidatingTextBox txtLabel;
         private ValidatingTextBox txtDescripition;
         private ValidatingTextBox txtAffinityGroup;
         private ValidatingTextBox txtLocation;
 
-        public CreateHostedServiceActionEditor() 
+        public CreateHostedServiceActionEditor()
         {
             this.extensionInstance = new CreateHostedServiceAction();
         }
@@ -37,7 +30,8 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             this.EnsureChildControls();
 
-            return PopulateProperties(new CreateHostedServiceAction()
+            return PopulateProperties(
+                new CreateHostedServiceAction()
                 {
                     Label = this.txtLabel.Text,
                     Description = this.txtDescripition.Text,
@@ -50,17 +44,15 @@ namespace Inedo.BuildMasterExtensions.Azure
         protected override void CreateChildControls()
         {
             base.CreateChildControls();
-            txtLabel = new ValidatingTextBox() {Width = 300};
-            txtDescripition = new ValidatingTextBox() {Width = 300};
+            txtLabel = new ValidatingTextBox() { Width = 300 };
+            txtDescripition = new ValidatingTextBox() { Width = 300 };
             txtLocation = new ValidatingTextBox() { Width = 300 };
             txtAffinityGroup = new ValidatingTextBox() { Width = 300 };
-            this.Controls.Add(new FormFieldGroup("Create Hosted Service Configuration",
-                "Options for the Create Hosted Service action", true,
-                new StandardFormField("Label:",txtLabel),
-                new StandardFormField("Description:",txtDescripition),
-                new StandardFormField("Location:",txtLocation),
-                new StandardFormField("Affinity Group:",txtAffinityGroup)
-                )
+            this.Controls.Add(
+                new SlimFormField("Label:", txtLabel),
+                new SlimFormField("Description:", txtDescripition),
+                new SlimFormField("Location:", txtLocation),
+                new SlimFormField("Affinity group:", txtAffinityGroup)
             );
         }
     }

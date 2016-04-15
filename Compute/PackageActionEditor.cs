@@ -80,6 +80,9 @@ namespace Inedo.BuildMasterExtensions.Azure
             };
         }
 
+        // this is all non-canonical
+#pragma warning disable CS0618 // Type or member is obsolete
+
         protected override void CreateChildControls()
         {
             this.ffpServiceDefinition = new SourceControlFileFolderPicker() { ID = "serviceDefinition", DisplayMode = SourceControlBrowser.DisplayModes.FoldersAndFiles, ServerId = 1 };
@@ -158,5 +161,6 @@ namespace Inedo.BuildMasterExtensions.Azure
                 )
             );
         }
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }

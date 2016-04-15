@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.UI.WebControls;
+﻿using System.Web.UI.WebControls;
 using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Web.Controls;
-using Inedo.BuildMaster.Web.Controls.Extensions;
 using Inedo.Web.Controls;
 
 namespace Inedo.BuildMasterExtensions.Azure
@@ -66,16 +61,14 @@ namespace Inedo.BuildMasterExtensions.Azure
             ffpPackageFile = new SourceControlFileFolderPicker() { ServerId = 1 };
             txtPackageFileStorageLocation = new ValidatingTextBox() { Width = 300 };
             chkDeleteFromStorage = new CheckBox() { Width = 300 };
-            this.Controls.Add(new FormFieldGroup("Deploy Package Configuration", 
-                "Options for the Deploy Cloud Service package action",true,
-                new StandardFormField("Label:",txtLabel),
-                new StandardFormField("Start Deployment:",chkStartDeployment),
-                new StandardFormField("Blob Storage Account Name:",txtStorageAccountName),
-                new StandardFormField("Blob Storage Access Key:",txtStorageAccessKey),
-                new StandardFormField("Package File Disk Location:",ffpPackageFile),
-                new StandardFormField("Package File Blob Location:",txtPackageFileStorageLocation),
-                new StandardFormField("Delete staged package from Blob Storage when complete",chkDeleteFromStorage)
-                )
+            this.Controls.Add(
+                new SlimFormField("Label:", txtLabel),
+                new SlimFormField("Start deployment:", chkStartDeployment),
+                new SlimFormField("Blob Storage account name:", txtStorageAccountName),
+                new SlimFormField("Blob Storage access key:", txtStorageAccessKey),
+                new SlimFormField("Package file disk location:", ffpPackageFile),
+                new SlimFormField("Package file blob location:", txtPackageFileStorageLocation),
+                new SlimFormField("Delete staged package from Blob Storage when complete", chkDeleteFromStorage)
             );
         }
     }

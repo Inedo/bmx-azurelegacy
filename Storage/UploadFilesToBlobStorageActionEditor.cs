@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
 using Inedo.BuildMaster.Web.Controls.Extensions;
 using Inedo.Web.Controls;
+using Inedo.Web.Controls.SimpleHtml;
 
 namespace Inedo.BuildMasterExtensions.Azure.Storage
 {
@@ -16,19 +16,10 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
         private CheckBox chkRecursive;
         private ValidatingTextBox txtTargetPath;
 
-        public UploadFilesToBlobStorageActionEditor()
-        {
-        }
-
-        public override bool DisplaySourceDirectory
-        {
-            get { return true; }
-        }
+        public override bool DisplaySourceDirectory => true;
 
         public override void BindToForm(ActionBase extension)
         {
-            this.EnsureChildControls();
-
             var action = (UploadFilesToBlobStorageAction)extension;
             this.txtAccountName.Text = action.AccountName;
             this.txtAccessKey.Text = action.AccessKey;
@@ -39,8 +30,6 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
         }
         public override ActionBase CreateFromForm()
         {
-            this.EnsureChildControls();
-
             return new UploadFilesToBlobStorageAction
             {
                 AccountName = this.txtAccountName.Text,
@@ -57,28 +46,24 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
             this.txtAccountName = new ValidatingTextBox
             {
                 ID = "txtAccountName",
-                Required = true,
-                Width = 300
+                Required = true
             };
 
             this.txtAccessKey = new ValidatingTextBox
             {
                 ID = "txtAccessKey",
-                Required = true,
-                Width = 300
+                Required = true
             };
 
             this.txtContainerName = new ValidatingTextBox
             {
                 ID = "txtContainerName",
-                Required = true,
-                Width = 300
+                Required = true
             };
 
             this.txtFileMasks = new ValidatingTextBox
             {
                 Required = true,
-                Width = 300,
                 Rows = 3,
                 TextMode = TextBoxMode.MultiLine
             };
@@ -90,33 +75,15 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
 
             this.txtTargetPath = new ValidatingTextBox
             {
-                Required = false,
-                Width = 300,
                 DefaultText = "(container root)"
             };
 
             this.Controls.Add(
-                new FormFieldGroup(
-                    "Azure Storage Account",
-                    "Provide the name of your Azure Storage Account and the Access Key used to access it.",
-                    false,
-                    new StandardFormField("Account:", this.txtAccountName),
-                    new StandardFormField("Access Key:", this.txtAccessKey)
-                ),
-                new FormFieldGroup(
-                    "Files to Upload",
-                    "Files in the source directory that match a mask entered here (one per line) will be uploaded.",
-                    false,
-                    new StandardFormField("File Masks:", this.txtFileMasks),
-                    new StandardFormField(string.Empty, this.chkRecursive)
-                ),
-                new FormFieldGroup(
-                    "Container",
-                    "Specify the target blob storage container and target path inside the container to upload files to. If the container does not exist, it will be created.",
-                    true,
-                    new StandardFormField("Container:", this.txtContainerName),
-                    new StandardFormField("Target Path:", this.txtTargetPath)
-                )
+                new SlimFormField("Account:", this.txtAccountName),
+                new SlimFormField("Access key:", this.txtAccessKey),
+                new SlimFormField("File masks:", new Div(this.txtFileMasks), new Div(this.chkRecursive)),
+                new SlimFormField("Container:", this.txtContainerName),
+                new SlimFormField("Target path:", this.txtTargetPath)
             );
         }
     }

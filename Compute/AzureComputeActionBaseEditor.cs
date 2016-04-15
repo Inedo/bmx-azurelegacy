@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using System.Web.UI.WebControls;
+﻿using System.Web.UI.WebControls;
 using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
 using Inedo.BuildMaster.Web.Controls.Extensions;
 using Inedo.Web.Controls;
-
+using Inedo.Web.Controls.SimpleHtml;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
@@ -41,7 +35,7 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         protected virtual AzureComputeActionBase PopulateProperties(AzureComputeActionBase Value)
         {
-            if(Value.UsesServiceName)
+            if (Value.UsesServiceName)
                 Value.ServiceName = txtServiceName.Text;
             if (Value.UsesDeploymentName)
                 Value.DeploymentName = txtDeploymentName.Text;
@@ -92,14 +86,10 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         private void AddActionAuthentication()
         {
-            this.Controls.Add(new FormFieldGroup("Custom Authentication",
-                "Authentication used for this action. If not populated then the credentials defined for the Windows Azure extension will be used",
-                false,
-                new StandardFormField("Subscription ID:", txtSubscriptionID),
-                new StandardFormField("Certificate Name:",txtCertificateName)
-                )
+            this.Controls.Add(
+                new SlimFormField("Subscription ID:", txtSubscriptionID),
+                new SlimFormField("Certificate name:", txtCertificateName)
             );
-
         }
 
         private void AddServiceInformation()
@@ -107,55 +97,37 @@ namespace Inedo.BuildMasterExtensions.Azure
 
             if (extensionInstance.UsesServiceName)
             {
-                var ff = new FormFieldGroup("Cloud Service",
-                            "Information about the cloud service.",
-                            false);
-                ff.FormFields.Add(new StandardFormField("Service Name:", this.txtServiceName));
-                this.Controls.Add(ff);
+                this.Controls.Add(new SlimFormField("Service name:", this.txtServiceName));
             }
         }
 
         private void AddDeploymentInformation()
         {
-            var ff = new FormFieldGroup("Deployment",
-                        "Information about the deployment and environment (production|staging).",
-                        false);
-            if(extensionInstance.UsesDeploymentName)
-                ff.FormFields.Add(new StandardFormField("Deployment Name:", txtDeploymentName));
+            if (extensionInstance.UsesDeploymentName)
+                this.Controls.Add(new SlimFormField("Deployment name:", txtDeploymentName));
             if (extensionInstance.UsesSlotName)
-                ff.FormFields.Add(new StandardFormField("Deployment Slot:", txtSlotName));
-            if (extensionInstance.UsesDeploymentName || extensionInstance.UsesSlotName)
-                this.Controls.Add(ff);
+                this.Controls.Add(new SlimFormField("Deployment slot:", txtSlotName));
         }
 
         private void AddExtendedInformation()
         {
-            var ff = new FormFieldGroup("Extended Information",
-                        "Extended information for this action.",
-                        false);
-            var foo = new StandardFormField();
             this.txtExtendedProperties.Rows = 4;
             this.txtExtensionConfiguration.Rows = 4;
             if (extensionInstance.UsesExtendedProperties)
-                ff.FormFields.Add(new StandardFormField("Extended Propeties (name=value):",txtExtendedProperties)); 
-            if(extensionInstance.UsesExtensionConfiguration)
-                ff.FormFields.Add(new StandardFormField("Extension Configuration (XML fragment):",txtExtensionConfiguration));
-            if (extensionInstance.UsesExtendedProperties || extensionInstance.UsesExtensionConfiguration)
-                this.Controls.Add(ff);
+                this.Controls.Add(new SlimFormField("Extended propeties (name=value):", txtExtendedProperties));
+            if (extensionInstance.UsesExtensionConfiguration)
+                this.Controls.Add(new SlimFormField("Extension configuration (XML fragment):", txtExtensionConfiguration));
         }
 
         private void AddActionOptions()
         {
-            var ff = new FormFieldGroup("Action Options",
-                        "Other options for the action.",
-                        false);
+            var ff = new SlimFormField("Action options:");
             if (extensionInstance.UsesTreatWarningsAsError)
-                ff.FormFields.Add(new StandardFormField("Treat Warnings as Errors",chkWarningsAsError));
+                ff.Controls.Add(new Div(chkWarningsAsError));
             if (extensionInstance.UsesWaitForCompletion)
-                ff.FormFields.Add(new StandardFormField("Wait For Completion", chkWaitForCompletion));
+                ff.Controls.Add(new Div(chkWaitForCompletion));
             if (extensionInstance.UsesTreatWarningsAsError || extensionInstance.UsesWaitForCompletion)
                 this.Controls.Add(ff);
         }
-
     }
 }

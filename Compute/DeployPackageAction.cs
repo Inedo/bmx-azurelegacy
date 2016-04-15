@@ -1,19 +1,20 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
 using Inedo.BuildMaster;
-using Inedo.BuildMaster.Extensibility.Actions;
+using Inedo.BuildMaster.Documentation;
 using Inedo.BuildMaster.Web;
+using Inedo.Serialization;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    [ActionProperties(
-        "Deploy Package",
-        "Deploys a Cloud Service package onto Windows Azure.")]
+    [DisplayName("Deploy Package")]
+    [Description("Deploys a Cloud Service package onto Windows Azure.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(DeployPackageActionEditor))]
     public class DeployPackageAction : AzureActionWithConfigBase
@@ -54,14 +55,14 @@ namespace Inedo.BuildMasterExtensions.Azure
         [Persistent]
         public bool DeletePackageFromStorage { get; set; }
 
-        public override ActionDescription GetActionDescription()
+        public override ExtendedRichDescription GetActionDescription()
         {
-            return new ActionDescription(
-                new ShortActionDescription(
+            return new ExtendedRichDescription(
+                new RichDescription(
                     "Deploy ",
                     !string.IsNullOrEmpty(this.PackageFile) ? (object)new DirectoryHilite(this.OverriddenSourceDirectory, this.PackageFile) : "package"
                 ),
-                new LongActionDescription(
+                new RichDescription(
                     "to Azure subscription ",
                     new Hilite(this.Credentials != null ? this.Credentials.SubscriptionID : string.Empty)
                 )
@@ -161,7 +162,6 @@ namespace Inedo.BuildMasterExtensions.Azure
                 this.LogDebug("Preparing to upload file...");
                 var account = new CloudStorageAccount(new StorageCredentials(this.StorageAccountName, this.StorageAccessKey), true);
                 var blobClient = account.CreateCloudBlobClient();
-                blobClient.SingleBlobUploadThresholdInBytes = 63 * 1024 * 1024;
                 var container = blobClient.GetContainerReference(BlobContainer);
                 this.LogDebug("Creating container \"{0}\" if it doesn't already exist...", BlobContainer);
                 container.CreateIfNotExists();

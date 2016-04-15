@@ -1,31 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Net;
-using System.Web;
-
 using Inedo.BuildMaster;
-using Inedo.BuildMaster.Extensibility.Actions;
+using Inedo.BuildMaster.Documentation;
 using Inedo.BuildMaster.Web;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    [ActionProperties(
-        "Delete Deployment",
-        "Deletes a deployment by slot or by name from a cloud service in Windows Azure.")]
+    [DisplayName("Delete Deployment")]
+    [Description("Deletes a deployment by slot or by name from a cloud service in Windows Azure.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(DeleteDeploymentActionEditor))]
-    public class DeleteDeploymentAction : AzureComputeActionBase 
+    public class DeleteDeploymentAction : AzureComputeActionBase
     {
-
-        public override string ToString()
-        {
-            return string.Format("Deleting deployment {0} for service {1}", 
-                (string.IsNullOrEmpty(this.DeploymentName) ? this.SlotName : this.DeploymentName),
-                this.ServiceName);
-        }
-
         public DeleteDeploymentAction()
         {
             this.UsesServiceName = true;
@@ -34,9 +20,18 @@ namespace Inedo.BuildMasterExtensions.Azure
             this.UsesWaitForCompletion = true;
         }
 
-        internal string Test()
+        public override ExtendedRichDescription GetActionDescription()
         {
-            return this.ProcessRemoteCommand(null, null);
+            return new ExtendedRichDescription(
+                new RichDescription(
+                    "Delete deployment ",
+                    new Hilite(AH.CoalesceString(this.DeploymentName, this.SlotName))
+                ),
+                new RichDescription(
+                    "for service ",
+                    new Hilite(this.ServiceName)
+                )
+            );
         }
 
         protected override void Execute()
@@ -48,9 +43,9 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             string requestID = string.Empty;
             requestID = MakeRequest();
-            if(string.IsNullOrEmpty(requestID))
+            if (string.IsNullOrEmpty(requestID))
                 return null;
-            if(this.WaitForCompletion)
+            if (this.WaitForCompletion)
                 this.WaitForRequestCompletion(requestID);
             return requestID;
         }
@@ -67,8 +62,8 @@ namespace Inedo.BuildMasterExtensions.Azure
             }
 
             AzureResponse resp = null;
-            if(string.IsNullOrEmpty(this.DeploymentName))
-                resp = AzureRequest(RequestType.Delete, null, "https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/{2}", 
+            if (string.IsNullOrEmpty(this.DeploymentName))
+                resp = AzureRequest(RequestType.Delete, null, "https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/{2}",
                     this.ServiceName, this.SlotName);
             else
                 resp = AzureRequest(RequestType.Delete, null, "https://management.core.windows.net/{0}/services/hostedservices/{1}/deployments/{2}",
@@ -80,6 +75,5 @@ namespace Inedo.BuildMasterExtensions.Azure
             }
             return resp.Headers.Get("x-ms-request-id");
         }
-
     }
 }

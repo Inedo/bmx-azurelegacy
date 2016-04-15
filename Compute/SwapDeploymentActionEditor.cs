@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.UI.WebControls;
-using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
-using Inedo.BuildMaster.Web.Controls.Extensions;
+﻿using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.Web.Controls;
 
 namespace Inedo.BuildMasterExtensions.Azure
@@ -47,14 +40,8 @@ namespace Inedo.BuildMasterExtensions.Azure
             txtProductionDeploymentName = new ValidatingTextBox() { Width = 300 };
             txtSourceDeploymentName = new ValidatingTextBox() { Width = 300 };
             this.Controls.Add(
-                new FormFieldGroup(
-                    "Swap Deployment Options", 
-                    "Specify the Source and Production deployment names to swap. "
-                    + "Leave these fields blank to swap Production and Staging.",
-                    true,
-                    new StandardFormField("Production Deployment Name:",txtProductionDeploymentName),
-                    new StandardFormField("Source Deployment Name:",txtSourceDeploymentName)
-                )
+                new SlimFormField("Production Deployment Name:", txtProductionDeploymentName),
+                new SlimFormField("Source Deployment Name:", txtSourceDeploymentName)
             );
         }
     }

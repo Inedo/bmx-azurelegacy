@@ -1,19 +1,21 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Inedo.BuildMaster;
+using Inedo.BuildMaster.Documentation;
 using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Files;
 using Inedo.BuildMaster.Web;
+using Inedo.Serialization;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace Inedo.BuildMasterExtensions.Azure.Storage
 {
-    [ActionProperties(
-        "Upload Files to Blob Storage",
-        "Uploads files from a BuildMaster Server to Windows Azure Blob Storage.")]
+    [DisplayName("Upload Files to Blob Storage")]
+    [Description("Uploads files from a BuildMaster Server to Windows Azure Blob Storage.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(UploadFilesToBlobStorageActionEditor))]
     public sealed class UploadFilesToBlobStorageAction : RemoteActionBase
@@ -31,14 +33,14 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
         [Persistent]
         public string TargetFolder { get; set; }
 
-        public override ActionDescription GetActionDescription()
+        public override ExtendedRichDescription GetActionDescription()
         {
-            return new ActionDescription(
-                new ShortActionDescription(
+            return new ExtendedRichDescription(
+                new RichDescription(
                     "Upload files matching ",
                     new ListHilite(this.FileMasks ?? new string[0])
                 ),
-                new LongActionDescription(
+                new RichDescription(
                     "from ",
                     new DirectoryHilite(this.OverriddenSourceDirectory),
                     " to ",
@@ -47,10 +49,7 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
             );
         }
 
-        protected override void Execute()
-        {
-            this.ExecuteRemoteCommand("upload");
-        }
+        protected override void Execute() => this.ExecuteRemoteCommand("upload");
         protected override string ProcessRemoteCommand(string name, string[] args)
         {
             if (name != "upload")

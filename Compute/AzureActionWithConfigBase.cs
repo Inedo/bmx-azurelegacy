@@ -2,12 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Inedo.BuildMaster;
 using Inedo.BuildMaster.ConfigurationFiles;
 using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility;
 using Inedo.BuildMaster.Extensibility.Agents;
 using Inedo.BuildMaster.Extensibility.Variables;
+using Inedo.IO;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
@@ -36,7 +37,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             if (!string.IsNullOrEmpty(this.ConfigurationFilePath))
             {
                 var configFileDir = this.ResolveDirectory(this.ConfigurationFilePath);
-                var configFile = Util.Path2.Combine(configFileDir, this.ConfigurationFileName);
+                var configFile = PathEx.Combine(configFileDir, this.ConfigurationFileName);
 
                 var fileOps = this.Context.Agent.GetService<IFileOperationsExecuter>();
 
@@ -71,7 +72,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             using (var memoryStream = new MemoryStream())
             {
                 var writer = new StreamWriter(memoryStream, new UTF8Encoding(false));
-                deployer.LogReceived += (s, e) => this.Log(e.LogLevel, e.Message);
+                deployer.MessageLogged += (s, e) => this.Log(e.Level, e.Message);
                 if (!deployer.Write((IGenericBuildMasterContext)this.Context, writer))
                     return null;
 
@@ -84,11 +85,10 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             this.LogDebug("Loading configuration file instance {0}...", instanceName);
 
-            var version = StoredProcs.Releases_GetRelease(this.Context.ApplicationId, this.Context.ReleaseNumber)
-                .Execute()
+            var version = DB.Releases_GetRelease(this.Context.ApplicationId, this.Context.ReleaseNumber)
                 .ReleaseConfigurationFiles
                 .FirstOrDefault(r => r.ConfigurationFile_Id == configurationFileId);
-            
+
             var file = this.GetConfigurationFileContents(configurationFileId, instanceName, version != null ? (int?)version.Version_Number : null);
             if (file == null)
                 return null;

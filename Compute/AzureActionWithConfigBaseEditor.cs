@@ -6,6 +6,7 @@ using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Web.Controls;
 using Inedo.Web.Controls;
+using Inedo.Web.Controls.SimpleHtml;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
@@ -15,7 +16,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         protected SourceControlFileFolderPicker ffpConfigFilePath;
         protected DropDownList ddlConfigurationFile, ddlInstance;
         private ValidatingTextBox txtConfigurationFileName, txtInstanceName;
-        private StandardFormField ctl_ddlInstance, ctl_txtConfigurationFileName, ctl_txtInstanceName;
+        private SlimFormField ctl_ddlInstance, ctl_txtConfigurationFileName, ctl_txtInstanceName;
 
         public AzureActionWithConfigBaseEditor()
         {
@@ -74,8 +75,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             this.ddlConfigurationFile = new DropDownList { ID = "ddlConfigurationFile", Width = 300, AutoPostBack = true };
             this.ddlConfigurationFile.Items.Add(string.Empty);
             this.ddlConfigurationFile.Items.AddRange(
-                StoredProcs.ConfigurationFiles_GetConfigurationFiles(Application_Id: this.ApplicationId, Deployable_Id: InedoLib.Util.NullIf(this.DeployableId, 0))
-                    .Execute()
+                DB.ConfigurationFiles_GetConfigurationFiles(Application_Id: this.ApplicationId, Deployable_Id: AH.NullIf(this.DeployableId, 0))
                     .ConfigurationFiles_Extended
                     .Select(c => new ListItem { Text = c.FilePath_Text, Value = c.ConfigurationFile_Id.ToString() })
             );
@@ -87,18 +87,17 @@ namespace Inedo.BuildMasterExtensions.Azure
             this.txtConfigurationFileName = new ValidatingTextBox { Width = 300 };
             this.txtInstanceName = new ValidatingTextBox { Width = 300 };
 
-            this.ctl_txtInstanceName = new StandardFormField("Instance Name:", this.txtInstanceName) { Visible = false };
-            this.ctl_ddlInstance = new StandardFormField("Instance Name:", this.ddlInstance);
-            this.ctl_txtConfigurationFileName = new StandardFormField("Configuration File Name:", this.txtConfigurationFileName) { Visible = false };
+            this.ctl_txtInstanceName = new SlimFormField("Instance Name:", this.txtInstanceName) { Visible = false };
+            this.ctl_ddlInstance = new SlimFormField("Instance Name:", this.ddlInstance);
+            this.ctl_txtConfigurationFileName = new SlimFormField("Configuration File Name:", this.txtConfigurationFileName) { Visible = false };
 
-            this.Controls.Add(new FormFieldGroup("Configuration File",
-                "Configuration file location, select only one. The order of evaluation is configuration file text, disk location, then configuration name.",
-                false,
-                new StandardFormField("Configuration Text:", this.txtConfigText),
-                new StandardFormField("Configuration File Location:", this.ffpConfigFilePath),
-                new StandardFormField("Configuration File:", this.ddlConfigurationFile),
-                ctl_txtConfigurationFileName,
-                ctl_ddlInstance
+            this.Controls.Add(
+                new Div(
+                    new SlimFormField("Configuration Text:", this.txtConfigText),
+                    new SlimFormField("Configuration File Location:", this.ffpConfigFilePath),
+                    new SlimFormField("Configuration File:", this.ddlConfigurationFile),
+                    ctl_txtConfigurationFileName,
+                    ctl_ddlInstance
                 )
             );
         }
@@ -121,9 +120,8 @@ namespace Inedo.BuildMasterExtensions.Azure
                 this.ctl_txtInstanceName.Visible = false;
 
                 this.ddlInstance.Items.Add(string.Empty);
-                this.ddlInstance.Items.AddRange(StoredProcs
+                this.ddlInstance.Items.AddRange(DB
                     .ConfigurationFiles_GetConfigurationFile(int.Parse(ddlConfigurationFile.SelectedValue), null)
-                    .Execute()
                     .ConfigurationFileInstances_Extended
                     .Select(cfg => new ListItem { Text = cfg.Instance_Name, Value = cfg.Instance_Name })
                     .ToArray()
@@ -143,8 +141,8 @@ namespace Inedo.BuildMasterExtensions.Azure
 
                 if (!IsPostBack)
                 {
-                    DataRow env = StoredProcs.Environments_GetEnvironment(this.EnvironmentId).ExecuteDataRow();
-                    (ddlInstance.Items.FindByValue((string)env[TableDefs.Environments.Environment_Name]) ?? new ListItem())
+                    var env = DB.Environments_GetEnvironment(this.EnvironmentId).Environments.First();
+                    (ddlInstance.Items.FindByValue(env.Environment_Name) ?? new ListItem())
                     .Selected = true;
                 }
             };

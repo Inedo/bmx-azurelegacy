@@ -1,18 +1,19 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using Inedo.BuildMaster;
-using Inedo.BuildMaster.Extensibility.Actions;
+using Inedo.BuildMaster.Documentation;
 using Inedo.BuildMaster.Web;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    [ActionProperties(
-        "Package Application",
-        "Packages Web and Worker Role applications for deployment onto Windows Azure.")]
+    [DisplayName("Package Application")]
+    [Description("Packages Web and Worker Role applications for deployment onto Windows Azure.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(PackageActionEditor))]
-    public sealed class PackageAction : AzureAction 
+    public sealed class PackageAction : AzureAction
     {
         [Persistent]
         public string ServiceDefinition { get; set; }
@@ -21,13 +22,13 @@ namespace Inedo.BuildMasterExtensions.Azure
         public string OutputFile { get; set; }
 
         [Persistent]
-        public AzureRole WebRole { get; set; }
+        public AzureRole WebRole { get; set; } = new AzureRole();
 
         [Persistent]
-        public AzureRole WorkerRole { get; set; }
+        public AzureRole WorkerRole { get; set; } = new AzureRole();
 
         [Persistent]
-        public AzureSite WebRoleSite { get; set; }
+        public AzureSite WebRoleSite { get; set; } = new AzureSite();
 
         [Persistent]
         public bool UseCtpPackageFormat { get; set; }
@@ -44,21 +45,19 @@ namespace Inedo.BuildMasterExtensions.Azure
         [Persistent]
         public string AdditionalArguments { get; set; }
 
-        public PackageAction()
+        public override ExtendedRichDescription GetActionDescription()
         {
-            this.WebRole = new AzureRole();
-            this.WorkerRole = new AzureRole();
-            this.WebRoleSite = new AzureSite();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("Packages the {0} definition to {1}.", this.ServiceDefinition, this.OutputFile);
-        }
-
-        internal void Test()
-        {
-            this.ProcessRemoteCommand(null,null);
+            return new ExtendedRichDescription(
+                new RichDescription(
+                    "Package the ",
+                    new Hilite(this.ServiceDefinition),
+                    " definition"
+                ),
+                new RichDescription(
+                    "to ",
+                    new Hilite(this.OutputFile)
+                )
+            );
         }
 
         protected override void Execute()
@@ -74,8 +73,8 @@ namespace Inedo.BuildMasterExtensions.Azure
             LogInformation("Ready to run command line {0} with parameters {1}", cmdLine, p);
             int exitcode = ExecuteCommandLine(cmdLine, p, workingDir);
             LogInformation("Result of command line: {0}", exitcode);
-            if(0 != exitcode) 
-                LogError("Error creating Azure package. Error Code: {0}",exitcode);
+            if (0 != exitcode)
+                LogError("Error creating Azure package. Error Code: {0}", exitcode);
             return exitcode.ToString();
         }
 
@@ -84,7 +83,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             PathToParse = this.ResolveDirectory(PathToParse);
             if (null == PathToParse)
                 return string.Empty;
-            if(Directory.Exists(PathToParse))
+            if (Directory.Exists(PathToParse))
                 return Path.Combine(PathToParse, "ServiceDefinition.csdef");
             if (string.IsNullOrEmpty(Path.GetFileName(PathToParse))) // if the name of the service definition file is not specified use the default one
                 return Path.Combine(PathToParse, "ServiceDefinition.csdef");

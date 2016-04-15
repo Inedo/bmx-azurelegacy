@@ -1,18 +1,18 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Net;
 using System.Xml.Linq;
 using Inedo.BuildMaster;
-using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Web;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    [ActionProperties(
-        "Change Deployment Configuration",
-        "Updates the configuration of a deployment in Windows Azure.")]
+    [DisplayName("Change Deployment Configuration")]
+    [Description("Updates the configuration of a deployment in Windows Azure.")]
     [Tag("windows-azure")]
     [CustomEditor(typeof(ChangeDeploymentConfigurationActionEditor))]
-    public class ChangeDeploymentConfigurationAction : AzureActionWithConfigBase  
+    public class ChangeDeploymentConfigurationAction : AzureActionWithConfigBase
     {
         public ChangeDeploymentConfigurationAction()
         {
@@ -32,7 +32,7 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         public override string ToString()
         {
-            return string.Format("Changing {0} deployment configuration for {0}", 
+            return string.Format("Changing {0} deployment configuration for {0}",
                 (string.IsNullOrEmpty(this.DeploymentName) ? this.SlotName : this.DeploymentName),
                 this.ServiceName);
         }
@@ -56,7 +56,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         internal string MakeRequest()
         {
             AzureResponse resp;
-            if(string.IsNullOrEmpty(this.DeploymentName))
+            if (string.IsNullOrEmpty(this.DeploymentName))
                 resp = AzureRequest(RequestType.Post, BuildRequestDocument(),
                     "https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/{2}/?comp=config",
                     this.ServiceName, this.SlotName.ToString().ToLowerInvariant());
@@ -66,8 +66,8 @@ namespace Inedo.BuildMasterExtensions.Azure
                     this.ServiceName, this.DeploymentName);
             if (HttpStatusCode.Accepted != resp.StatusCode)
             {
-                LogError("Error changing configuration for the {0} deployment in {1}. Error code is: {2}, error description: {3}", 
-                    (string.IsNullOrEmpty(this.DeploymentName) ? this.SlotName : this.DeploymentName), this.ServiceName, 
+                LogError("Error changing configuration for the {0} deployment in {1}. Error code is: {2}, error description: {3}",
+                    (string.IsNullOrEmpty(this.DeploymentName) ? this.SlotName : this.DeploymentName), this.ServiceName,
                     resp.ErrorCode, resp.ErrorMessage);
                 return null;
             }
