@@ -141,7 +141,7 @@ namespace Inedo.BuildMasterExtensions.Azure
 
                 if (!IsPostBack)
                 {
-                    var env = DB.Environments_GetEnvironment(this.EnvironmentId).Environments.First();
+                    var env = DB.Environments_GetEnvironment(this.EnvironmentId).Environments_Extended.First();
                     (ddlInstance.Items.FindByValue(env.Environment_Name) ?? new ListItem())
                     .Selected = true;
                 }
