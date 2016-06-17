@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Inedo.Agents;
 using Inedo.BuildMaster.ConfigurationFiles;
 using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility;

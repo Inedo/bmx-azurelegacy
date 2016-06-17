@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
+using Inedo.Agents;
 using Inedo.BuildMaster;
 using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility;
