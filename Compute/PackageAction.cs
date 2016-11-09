@@ -79,7 +79,7 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         internal string ParseServiceDefinition(string PathToParse)
         {
-            PathToParse = this.ResolveDirectory(PathToParse);
+            PathToParse = this.ResolveLegacyPath(PathToParse);
             if (null == PathToParse)
                 return string.Empty;
             if (Directory.Exists(PathToParse))
@@ -87,7 +87,6 @@ namespace Inedo.BuildMasterExtensions.Azure
             if (string.IsNullOrEmpty(Path.GetFileName(PathToParse))) // if the name of the service definition file is not specified use the default one
                 return Path.Combine(PathToParse, "ServiceDefinition.csdef");
             return PathToParse;
-
         }
 
         internal string BuildCommand()
@@ -104,27 +103,27 @@ namespace Inedo.BuildMasterExtensions.Azure
             p.Append(ParseServiceDefinition(this.ServiceDefinition)); // add the service definition path parameter
             if ((null != this.WebRole) && !string.IsNullOrEmpty(this.WebRole.RoleName)) // add WebRole parameters
             {
-                p.AppendFormat(" /role:{0};{1}", this.WebRole.RoleName, this.ResolveDirectory(this.WebRole.RoleBinDirectory));
+                p.AppendFormat(" /role:{0};{1}", this.WebRole.RoleName, this.ResolveLegacyPath(this.WebRole.RoleBinDirectory));
                 if (!string.IsNullOrEmpty(this.WebRole.RoleAssemblyName))
                     p.AppendFormat(";{0}", this.WebRole.RoleAssemblyName);
             }
             if ((null != this.WebRoleSite) && !string.IsNullOrEmpty(this.WebRoleSite.RoleName)) // add WebRole site parameters
             {
-                p.AppendFormat(" /sites:{0};{1};{2}", this.WebRoleSite.RoleName, this.WebRoleSite.VirtualPath, this.ResolveDirectory(this.WebRoleSite.PhysicalPath));
+                p.AppendFormat(" /sites:{0};{1};{2}", this.WebRoleSite.RoleName, this.WebRoleSite.VirtualPath, this.ResolveLegacyPath(this.WebRoleSite.PhysicalPath));
             }
             if ((null != this.WorkerRole) && !string.IsNullOrEmpty(this.WorkerRole.RoleName)) // add Worker Role parameters
             {
-                p.AppendFormat(" /role:{0};{1};{2}", this.WorkerRole.RoleName, this.ResolveDirectory(this.WorkerRole.RoleBinDirectory), this.WorkerRole.RoleAssemblyName);
+                p.AppendFormat(" /role:{0};{1};{2}", this.WorkerRole.RoleName, this.ResolveLegacyPath(this.WorkerRole.RoleBinDirectory), this.WorkerRole.RoleAssemblyName);
             }
             if (!string.IsNullOrEmpty(this.RolePropertiesFileRoleName))
-                p.AppendFormat(" /rolePropertiesFile:{0};{1}", this.RolePropertiesFileRoleName, this.ResolveDirectory(this.RolePropertiesFile));
+                p.AppendFormat(" /rolePropertiesFile:{0};{1}", this.RolePropertiesFileRoleName, this.ResolveLegacyPath(this.RolePropertiesFile));
             if (this.UseCtpPackageFormat)
                 p.Append(" /useCtpPackageFormat");
             if (this.CopyOnly)
                 p.Append(" /copyOnly");
             if (!string.IsNullOrEmpty(this.OutputFile))
             {
-                string output = this.ResolveDirectory(this.OutputFile);
+                string output = this.ResolveLegacyPath(this.OutputFile);
                 string outputDir = Path.GetDirectoryName(output);
                 if (!Directory.Exists(outputDir))
                     Directory.CreateDirectory(outputDir);

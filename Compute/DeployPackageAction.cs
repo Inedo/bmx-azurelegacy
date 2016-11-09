@@ -164,7 +164,7 @@ namespace Inedo.BuildMasterExtensions.Azure
                 var container = blobClient.GetContainerReference(BlobContainer);
                 this.LogDebug("Creating container \"{0}\" if it doesn't already exist...", BlobContainer);
                 container.CreateIfNotExists();
-                string package = this.ResolveDirectory(this.PackageFile);
+                string package = this.ResolveLegacyPath(this.PackageFile);
                 if (!File.Exists(package))
                 {
                     this.LogError("UploadPackage unable to locate package file at: {0}", package);

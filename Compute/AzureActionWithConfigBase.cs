@@ -37,7 +37,7 @@ namespace Inedo.BuildMasterExtensions.Azure
 
             if (!string.IsNullOrEmpty(this.ConfigurationFilePath))
             {
-                var configFileDir = this.ResolveDirectory(this.ConfigurationFilePath);
+                var configFileDir = this.ResolveLegacyPath(this.ConfigurationFilePath);
                 var configFile = PathEx.Combine(configFileDir, this.ConfigurationFileName);
 
                 var fileOps = this.Context.Agent.GetService<IFileOperationsExecuter>();

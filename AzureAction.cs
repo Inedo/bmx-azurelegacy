@@ -54,16 +54,13 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         protected AzureAuthentication Credentials => this.ActionCredentials ?? this.Configurer.Credentials;
 
-        protected string ResolveDirectory(string filePath)
+        protected string ResolveLegacyPath(string legacyPath)
         {
-            using (var agent = Util.Agents.CreateLocalAgent())
-            {
-                var fileOps = agent.GetService<IFileOperationsExecuter>();
-                var directory = Path.Combine(fileOps.GetExecutionBaseDirectory((IGenericBuildMasterContext)this.Context), filePath);
+            string resolvedPath = LegacyPathResolver.GetWorkingDirectory(this.Context.ExecutionId, this.Context.DeployableId, legacyPath);
 
-                this.LogDebug("Resolved directory: " + directory);
-                return directory;
-            }
+            this.LogDebug("Resolved path: " + resolvedPath);
+
+            return resolvedPath;
         }
 
         internal protected IDictionary<string, string> ListLocations()
