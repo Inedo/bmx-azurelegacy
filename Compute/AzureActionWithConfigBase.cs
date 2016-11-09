@@ -6,6 +6,7 @@ using Inedo.Agents;
 using Inedo.BuildMaster.ConfigurationFiles;
 using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility;
+using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Extensibility.Agents;
 using Inedo.BuildMaster.Extensibility.Variables;
 using Inedo.IO;
@@ -52,7 +53,7 @@ namespace Inedo.BuildMasterExtensions.Azure
                     return fileOps.ReadAllText(configFile);
 
                 var tree = VariableExpressionTree.Parse(fileOps.ReadAllText(configFile), Domains.VariableSupportCodes.All);
-                var variableContext = (IVariableEvaluationContext)Activator.CreateInstance(Type.GetType("Inedo.BuildMaster.Variables.StandardVariableEvaluationContext,BuildMaster"), (IGenericBuildMasterContext)this.Context, this.Context.Variables);
+                var variableContext = FindVariableEvaluationContext(this.Context);
                 return tree.Evaluate(variableContext);
             }
 
@@ -96,6 +97,23 @@ namespace Inedo.BuildMasterExtensions.Azure
 
             this.LogDebug("Configuration file found.");
             return Encoding.UTF8.GetString(file);
+        }
+
+        private static IVariableEvaluationContext FindVariableEvaluationContext(IAgentBasedActionExecutionContext context)
+        {
+            var wrappedContext = new SimpleBuildMasterContext(context);
+
+            var type = Type.GetType("Inedo.BuildMaster.Variables.StandardVariableEvaluationContext,BuildMaster", false);
+
+            if (type != null)
+            {
+                return (IVariableEvaluationContext)Activator.CreateInstance(type, wrappedContext, context.Variables);
+            }
+            else
+            {
+                type = Type.GetType("Inedo.BuildMaster.Variables.LegacyVariableEvaluationContext,BuildMaster", true);
+                return (IVariableEvaluationContext)Activator.CreateInstance(type, wrappedContext, context.Variables);
+            }
         }
     }
 }
