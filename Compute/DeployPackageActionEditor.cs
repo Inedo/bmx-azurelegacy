@@ -11,7 +11,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         private CheckBox chkStartDeployment;
         private ValidatingTextBox txtStorageAccountName;
         private ValidatingTextBox txtStorageAccessKey;
-        private SourceControlFileFolderPicker ffpPackageFile;
+        private FileBrowserTextBox ffpPackageFile;
         private ValidatingTextBox txtPackageFileStorageLocation;
         private CheckBox chkDeleteFromStorage;
 
@@ -58,7 +58,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             chkStartDeployment = new CheckBox() { Width = 300 };
             txtStorageAccountName = new ValidatingTextBox() { Width = 300, Required = true };
             txtStorageAccessKey = new ValidatingTextBox() {Width = 300, Required = true};
-            ffpPackageFile = new SourceControlFileFolderPicker() { ServerId = 1 };
+            ffpPackageFile = new FileBrowserTextBox() { ServerId = 1 };
             txtPackageFileStorageLocation = new ValidatingTextBox() { Width = 300 };
             chkDeleteFromStorage = new CheckBox() { Width = 300 };
             this.Controls.Add(

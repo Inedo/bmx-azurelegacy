@@ -99,7 +99,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             return Encoding.UTF8.GetString(file);
         }
 
-        private static IVariableEvaluationContext FindVariableEvaluationContext(IAgentBasedActionExecutionContext context)
+        private static ILegacyVariableEvaluationContext FindVariableEvaluationContext(IAgentBasedActionExecutionContext context)
         {
             var wrappedContext = new SimpleBuildMasterContext(context);
 
@@ -107,12 +107,12 @@ namespace Inedo.BuildMasterExtensions.Azure
 
             if (type != null)
             {
-                return (IVariableEvaluationContext)Activator.CreateInstance(type, wrappedContext, context.Variables);
+                return (ILegacyVariableEvaluationContext)Activator.CreateInstance(type, wrappedContext, context.Variables);
             }
             else
             {
                 type = Type.GetType("Inedo.BuildMaster.Variables.LegacyVariableEvaluationContext,BuildMaster", true);
-                return (IVariableEvaluationContext)Activator.CreateInstance(type, wrappedContext, context.Variables);
+                return (ILegacyVariableEvaluationContext)Activator.CreateInstance(type, wrappedContext, context.Variables);
             }
         }
     }

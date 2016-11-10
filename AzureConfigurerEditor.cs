@@ -8,15 +8,14 @@ namespace Inedo.BuildMasterExtensions.Azure
 {
     internal sealed class AzureConfigurerEditor : ExtensionConfigurerEditorBase
     {
-        private SourceControlFileFolderPicker sdkPath;
+        private FileBrowserTextBox sdkPath;
         private ValidatingTextBox txtSubscriptionID;
         private ValidatingTextBox txtCertificateName;
 
         public AzureConfigurerEditor()
         {
-            this.sdkPath = new SourceControlFileFolderPicker();
+            this.sdkPath = new FileBrowserTextBox();
             this.sdkPath.ID = "sdkPath";
-            this.sdkPath.DisplayMode = SourceControlBrowser.DisplayModes.Folders;
 
             this.txtSubscriptionID = new ValidatingTextBox() { Width = 300 };
             this.txtCertificateName = new ValidatingTextBox() { Width = 300 };
