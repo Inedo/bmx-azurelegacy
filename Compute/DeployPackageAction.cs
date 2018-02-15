@@ -4,7 +4,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
 using Inedo.Serialization;
 using Microsoft.WindowsAzure.Storage;
@@ -15,7 +14,8 @@ namespace Inedo.BuildMasterExtensions.Azure
     [DisplayName("Deploy Package")]
     [Description("Deploys a Cloud Service package onto Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(DeployPackageActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(DeployPackageActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.DeployPackageAction,Azure")]
     public class DeployPackageAction : AzureActionWithConfigBase
     {
         public DeployPackageAction()

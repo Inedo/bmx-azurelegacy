@@ -9,21 +9,21 @@ namespace Inedo.BuildMasterExtensions.Azure
 {
     internal sealed class PackageActionEditor : ActionEditorBase 
     {
-        private FileBrowserTextBox ffpServiceDefinition;
+        private Inedo.Web.FileBrowserTextBox ffpServiceDefinition;
         private ValidatingTextBox txtWebRoleName;
-        private FileBrowserTextBox ffpWebRoleBinDir;
+        private Inedo.Web.FileBrowserTextBox ffpWebRoleBinDir;
         private ValidatingTextBox txtWebRoleAssemblyName;
         private ValidatingTextBox txtWebRoleSiteRoleName;
         private ValidatingTextBox txtWebRoleSiteVirtualPath;
         private ValidatingTextBox txtWebRoleSitePhysicaPath;
         private ValidatingTextBox txtWorkerRoleName;
-        private FileBrowserTextBox ffpWorkerRoleBinDir;
+        private Inedo.Web.FileBrowserTextBox ffpWorkerRoleBinDir;
         private ValidatingTextBox txtWorkerRoleAssemblyName;
         private ValidatingTextBox txtRolePropertiesFileRoleName;
-        private FileBrowserTextBox ffpPropertiesFile;
+        private Inedo.Web.FileBrowserTextBox ffpPropertiesFile;
         private CheckBox chkUseCTPPackageFormat;
         private CheckBox chkCopyOnly;
-        private FileBrowserTextBox ffpOutput;
+        private Inedo.Web.FileBrowserTextBox ffpOutput;
         private ValidatingTextBox txtAdditionalArguments;
 
         public PackageActionEditor() { }
@@ -85,20 +85,20 @@ namespace Inedo.BuildMasterExtensions.Azure
 
         protected override void CreateChildControls()
         {
-            this.ffpServiceDefinition = new FileBrowserTextBox() { ID = "serviceDefinition", IncludeFiles = true, ServerId = 1 };
+            this.ffpServiceDefinition = new Inedo.Web.FileBrowserTextBox() { ID = "serviceDefinition", IncludeFiles = true, ServerId = 1 };
             this.txtWebRoleName = new ValidatingTextBox() { Width = 300 };
-            this.ffpWebRoleBinDir = new FileBrowserTextBox() { ID = "ffpWebRoleBinDir", ServerId = 1 };
+            this.ffpWebRoleBinDir = new Inedo.Web.FileBrowserTextBox() { ID = "ffpWebRoleBinDir", ServerId = 1 };
             this.txtWebRoleAssemblyName = new ValidatingTextBox() { Width = 300 };
             this.txtWebRoleSiteRoleName = new ValidatingTextBox() { Width = 300 };
             this.txtWebRoleSiteVirtualPath = new ValidatingTextBox() { Width = 300 };
             this.txtWebRoleSitePhysicaPath = new ValidatingTextBox() { Width = 300 };
             this.txtWorkerRoleName = new ValidatingTextBox() { Width = 300 };
-            this.ffpWorkerRoleBinDir = new FileBrowserTextBox() { ID = "ffpWorkerRoleBinDir", ServerId = 1 };
+            this.ffpWorkerRoleBinDir = new Inedo.Web.FileBrowserTextBox() { ID = "ffpWorkerRoleBinDir", ServerId = 1 };
             this.txtWorkerRoleAssemblyName = new ValidatingTextBox() { Width = 300 };
             this.txtRolePropertiesFileRoleName = new ValidatingTextBox() { Width = 300 };
-            this.ffpPropertiesFile = new FileBrowserTextBox() { ID = "ffpPropertiesFile", IncludeFiles = true, ServerId = 1 };
+            this.ffpPropertiesFile = new Inedo.Web.FileBrowserTextBox() { ID = "ffpPropertiesFile", IncludeFiles = true, ServerId = 1 };
             this.chkUseCTPPackageFormat = new CheckBox() { Width = 300, Text = "Use CTP Package Format", Checked = true };
-            this.ffpOutput = new FileBrowserTextBox() { ID = "ffpOutput", IncludeFiles = true, ServerId = 1 };
+            this.ffpOutput = new Inedo.Web.FileBrowserTextBox() { ID = "ffpOutput", IncludeFiles = true, ServerId = 1 };
             this.chkCopyOnly = new CheckBox() { Width = 300, Text = "Copy Only" };
             this.txtAdditionalArguments = new ValidatingTextBox() { Width = 300 };
             this.Controls.Add(

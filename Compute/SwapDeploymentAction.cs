@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Net;
 using System.Text;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
 using Inedo.Serialization;
 
@@ -10,7 +9,8 @@ namespace Inedo.BuildMasterExtensions.Azure
     [DisplayName("Swap Deployment")]
     [Description("Swaps a production and staging deployment in Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(SwapDeploymentActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(SwapDeploymentActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.SwapDeploymentAction,Azure")]
     public class SwapDeploymentAction : AzureComputeActionBase
     {
         public SwapDeploymentAction()

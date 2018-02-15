@@ -7,7 +7,6 @@ using Inedo.BuildMaster.ConfigurationFiles;
 using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility;
 using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Extensibility.Agents;
 using Inedo.BuildMaster.Extensibility.Variables;
 using Inedo.IO;
 using Inedo.Serialization;

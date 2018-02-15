@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using Inedo.BuildMaster.Data;
 using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
 using Inedo.Web.Controls;
 using Inedo.Web.Controls.SimpleHtml;
 
@@ -13,7 +12,7 @@ namespace Inedo.BuildMasterExtensions.Azure
     public abstract class AzureActionWithConfigBaseEditor : AzureComputeActionBaseEditor
     {
         protected TextBox txtConfigText;
-        protected FileBrowserTextBox ffpConfigFilePath;
+        protected Inedo.Web.FileBrowserTextBox ffpConfigFilePath;
         protected DropDownList ddlConfigurationFile, ddlInstance;
         private ValidatingTextBox txtConfigurationFileName, txtInstanceName;
         private SlimFormField ctl_ddlInstance, ctl_txtConfigurationFileName, ctl_txtInstanceName;
@@ -21,7 +20,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         public AzureActionWithConfigBaseEditor()
         {
             this.txtConfigText = new TextBox() { TextMode = TextBoxMode.MultiLine, Width = 300, Rows = 4 };
-            this.ffpConfigFilePath = new FileBrowserTextBox() { Width = 300, ServerId = 1 };
+            this.ffpConfigFilePath = new Inedo.Web.FileBrowserTextBox() { Width = 300, ServerId = 1 };
         }
 
         public override void BindToForm(ActionBase extension)

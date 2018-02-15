@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.UI.WebControls;
-using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
-using Inedo.BuildMaster.Web.Controls.Extensions;
-using Inedo.Web.Controls;
+﻿using Inedo.BuildMaster.Extensibility.Actions;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {

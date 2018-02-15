@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
 using Inedo.Serialization;
 
@@ -11,7 +10,8 @@ namespace Inedo.BuildMasterExtensions.Azure
     [DisplayName("Change Deployment Configuration")]
     [Description("Updates the configuration of a deployment in Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(ChangeDeploymentConfigurationActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(ChangeDeploymentConfigurationActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.ChangeDeploymentConfigurationAction,Azure")]
     public class ChangeDeploymentConfigurationAction : AzureActionWithConfigBase
     {
         public ChangeDeploymentConfigurationAction()

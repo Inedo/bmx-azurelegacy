@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Text;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
 using Inedo.Serialization;
 
@@ -11,7 +10,8 @@ namespace Inedo.BuildMasterExtensions.Azure
     [DisplayName("Package Application")]
     [Description("Packages Web and Worker Role applications for deployment onto Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(PackageActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(PackageActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.PackageAction,Azure")]
     public sealed class PackageAction : AzureAction
     {
         [Persistent]

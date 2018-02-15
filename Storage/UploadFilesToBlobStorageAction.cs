@@ -6,7 +6,6 @@ using System.Threading;
 using Inedo.BuildMaster;
 using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.BuildMaster.Files;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
 using Inedo.Serialization;
 using Microsoft.WindowsAzure.Storage;
@@ -17,7 +16,8 @@ namespace Inedo.BuildMasterExtensions.Azure.Storage
     [DisplayName("Upload Files to Blob Storage")]
     [Description("Uploads files from a BuildMaster Server to Windows Azure Blob Storage.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(UploadFilesToBlobStorageActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(UploadFilesToBlobStorageActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.Storage.UploadFilesToBlobStorageAction,Azure")]
     public sealed class UploadFilesToBlobStorageAction : RemoteActionBase
     {
         [Persistent]

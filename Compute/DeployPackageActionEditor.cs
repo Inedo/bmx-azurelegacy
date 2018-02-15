@@ -1,6 +1,5 @@
 ﻿using System.Web.UI.WebControls;
 using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Web.Controls;
 using Inedo.Web.Controls;
 
 namespace Inedo.BuildMasterExtensions.Azure
@@ -11,7 +10,7 @@ namespace Inedo.BuildMasterExtensions.Azure
         private CheckBox chkStartDeployment;
         private ValidatingTextBox txtStorageAccountName;
         private ValidatingTextBox txtStorageAccessKey;
-        private FileBrowserTextBox ffpPackageFile;
+        private Inedo.Web.FileBrowserTextBox ffpPackageFile;
         private ValidatingTextBox txtPackageFileStorageLocation;
         private CheckBox chkDeleteFromStorage;
 
@@ -58,7 +57,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             chkStartDeployment = new CheckBox() { Width = 300 };
             txtStorageAccountName = new ValidatingTextBox() { Width = 300, Required = true };
             txtStorageAccessKey = new ValidatingTextBox() {Width = 300, Required = true};
-            ffpPackageFile = new FileBrowserTextBox() { ServerId = 1 };
+            ffpPackageFile = new Inedo.Web.FileBrowserTextBox() { ServerId = 1 };
             txtPackageFileStorageLocation = new ValidatingTextBox() { Width = 300 };
             chkDeleteFromStorage = new CheckBox() { Width = 300 };
             this.Controls.Add(

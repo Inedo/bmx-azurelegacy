@@ -1,6 +1,5 @@
 ﻿using System;
 using Inedo.BuildMaster.Extensibility.Configurers.Extension;
-using Inedo.BuildMaster.Web.Controls;
 using Inedo.BuildMaster.Web.Controls.Extensions;
 using Inedo.Web.Controls;
 
@@ -8,13 +7,13 @@ namespace Inedo.BuildMasterExtensions.Azure
 {
     internal sealed class AzureConfigurerEditor : ExtensionConfigurerEditorBase
     {
-        private FileBrowserTextBox sdkPath;
+        private Inedo.Web.FileBrowserTextBox sdkPath;
         private ValidatingTextBox txtSubscriptionID;
         private ValidatingTextBox txtCertificateName;
 
         public AzureConfigurerEditor()
         {
-            this.sdkPath = new FileBrowserTextBox();
+            this.sdkPath = new Inedo.Web.FileBrowserTextBox();
             this.sdkPath.ID = "sdkPath";
 
             this.txtSubscriptionID = new ValidatingTextBox() { Width = 300 };

@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Net;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
     [DisplayName("Delete Hosted Service")]
     [Description("Deletes a cloud service in Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(DeleteHostedServiceActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(DeleteHostedServiceActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.DeleteHostedServiceAction,Azure")]
     public class DeleteHostedServiceAction : AzureComputeActionBase
     {
         public DeleteHostedServiceAction()

@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Net;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
     [DisplayName("Delete Deployment")]
     [Description("Deletes a deployment by slot or by name from a cloud service in Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(DeleteDeploymentActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(DeleteDeploymentActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.DeleteDeploymentAction,Azure")]
     public class DeleteDeploymentAction : AzureComputeActionBase
     {
         public DeleteDeploymentAction()

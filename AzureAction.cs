@@ -7,12 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using Inedo.Agents;
-using Inedo.BuildMaster;
 using Inedo.BuildMaster.Data;
-using Inedo.BuildMaster.Extensibility;
 using Inedo.BuildMaster.Extensibility.Actions;
-using Inedo.BuildMaster.Extensibility.Agents;
 using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure

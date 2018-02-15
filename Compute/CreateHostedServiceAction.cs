@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Net;
 using System.Text;
-using Inedo.BuildMaster.Web;
 using Inedo.Documentation;
 using Inedo.Serialization;
 
@@ -10,7 +9,8 @@ namespace Inedo.BuildMasterExtensions.Azure
     [DisplayName("Create Hosted Service")]
     [Description("Creates a new cloud service in Windows Azure.")]
     [Tag("windows-azure")]
-    [CustomEditor(typeof(CreateHostedServiceActionEditor))]
+    [Inedo.Web.CustomEditor(typeof(CreateHostedServiceActionEditor))]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.CreateHostedServiceAction,Azure")]
     public class CreateHostedServiceAction : AzureComputeActionBase
     {
         public CreateHostedServiceAction()
