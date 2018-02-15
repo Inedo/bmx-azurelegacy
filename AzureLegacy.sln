@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azure", "Azure.csproj", "{9441474E-CF78-4078-B3A7-60E4A3FA9522}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureLegacy", "AzureLegacy.csproj", "{9441474E-CF78-4078-B3A7-60E4A3FA9522}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
