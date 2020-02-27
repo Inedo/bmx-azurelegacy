@@ -6,6 +6,7 @@ using System.Text;
 namespace Inedo.BuildMasterExtensions.Azure
 {
     [Serializable]
+    [PersistFrom("Inedo.BuildMasterExtensions.Azure.AzureAuthentication,Azure")]
     public class AzureAuthentication
     {
         public string SubscriptionID { get; set; }
