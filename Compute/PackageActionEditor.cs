@@ -43,16 +43,16 @@ namespace Inedo.BuildMasterExtensions.Azure
             var action = (PackageAction)extension;
             this.ffpServiceDefinition.ServerId = this.ServerId;
             this.ffpServiceDefinition.Text = action.ServiceDefinition;
-            this.txtWebRoleName.Text = action.WebRole.RoleName;
+            this.txtWebRoleName.Text = action.WebRoleObj.RoleName;
             this.ffpWebRoleBinDir.ServerId = this.ServerId;
-            this.ffpWebRoleBinDir.Text = action.WebRole.RoleBinDirectory;
-            this.txtWebRoleAssemblyName.Text = action.WebRole.RoleAssemblyName;
-            this.txtWebRoleSiteRoleName.Text = action.WebRoleSite.RoleName;
-            this.txtWebRoleSiteVirtualPath.Text = action.WebRoleSite.VirtualPath;
-            this.txtWebRoleSitePhysicaPath.Text = action.WebRoleSite.PhysicalPath;
-            this.txtWorkerRoleName.Text = action.WorkerRole.RoleName;
-            this.ffpWorkerRoleBinDir.Text = action.WorkerRole.RoleBinDirectory;
-            this.txtWorkerRoleAssemblyName.Text = action.WorkerRole.RoleAssemblyName;
+            this.ffpWebRoleBinDir.Text = action.WebRoleObj.RoleBinDirectory;
+            this.txtWebRoleAssemblyName.Text = action.WebRoleObj.RoleAssemblyName;
+            this.txtWebRoleSiteRoleName.Text = action.WebRoleSiteObj.RoleName;
+            this.txtWebRoleSiteVirtualPath.Text = action.WebRoleSiteObj.VirtualPath;
+            this.txtWebRoleSitePhysicaPath.Text = action.WebRoleSiteObj.PhysicalPath;
+            this.txtWorkerRoleName.Text = action.WorkerRoleObj.RoleName;
+            this.ffpWorkerRoleBinDir.Text = action.WorkerRoleObj.RoleBinDirectory;
+            this.txtWorkerRoleAssemblyName.Text = action.WorkerRoleObj.RoleAssemblyName;
             this.txtRolePropertiesFileRoleName.Text = action.RolePropertiesFileRoleName;
             this.ffpPropertiesFile.Text = action.RolePropertiesFile;
             this.chkUseCTPPackageFormat.Checked = action.UseCtpPackageFormat;
@@ -68,9 +68,9 @@ namespace Inedo.BuildMasterExtensions.Azure
             return new PackageAction
             {
                 ServiceDefinition = this.ffpServiceDefinition.Text,
-                WebRole = new AzureRole() { RoleName = this.txtWebRoleName.Text, RoleBinDirectory = this.ffpWebRoleBinDir.Text, RoleAssemblyName = this.txtWebRoleAssemblyName.Text },
-                WebRoleSite = new AzureSite() { RoleName = this.txtWebRoleSiteRoleName.Text, VirtualPath = this.txtWebRoleSiteVirtualPath.Text, PhysicalPath = this.txtWebRoleSitePhysicaPath.Text },
-                WorkerRole = new AzureRole() { RoleName = this.txtWorkerRoleName.Text, RoleBinDirectory = this.ffpWorkerRoleBinDir.Text, RoleAssemblyName = this.txtWorkerRoleAssemblyName.Text },
+                WebRoleObj = new AzureRole() { RoleName = this.txtWebRoleName.Text, RoleBinDirectory = this.ffpWebRoleBinDir.Text, RoleAssemblyName = this.txtWebRoleAssemblyName.Text },
+                WebRoleSiteObj = new AzureSite() { RoleName = this.txtWebRoleSiteRoleName.Text, VirtualPath = this.txtWebRoleSiteVirtualPath.Text, PhysicalPath = this.txtWebRoleSitePhysicaPath.Text },
+                WorkerRoleObj = new AzureRole() { RoleName = this.txtWorkerRoleName.Text, RoleBinDirectory = this.ffpWorkerRoleBinDir.Text, RoleAssemblyName = this.txtWorkerRoleAssemblyName.Text },
                 RolePropertiesFileRoleName = this.txtRolePropertiesFileRoleName.Text, 
                 RolePropertiesFile = this.ffpPropertiesFile.Text,
                 UseCtpPackageFormat = this.chkUseCTPPackageFormat.Checked,

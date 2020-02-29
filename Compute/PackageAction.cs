@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Inedo.BuildMaster.Extensibility.Actions;
 using Inedo.Documentation;
 using Inedo.Serialization;
 
@@ -21,13 +26,13 @@ namespace Inedo.BuildMasterExtensions.Azure
         public string OutputFile { get; set; }
 
         [Persistent]
-        public AzureRole WebRole { get; set; } = new AzureRole();
+        public AzureRole WebRoleObj { get; set; } = new AzureRole();
 
         [Persistent]
-        public AzureRole WorkerRole { get; set; } = new AzureRole();
+        public AzureRole WorkerRoleObj { get; set; } = new AzureRole();
 
         [Persistent]
-        public AzureSite WebRoleSite { get; set; } = new AzureSite();
+        public AzureSite WebRoleSiteObj { get; set; } = new AzureSite();
 
         [Persistent]
         public bool UseCtpPackageFormat { get; set; }
@@ -101,19 +106,19 @@ namespace Inedo.BuildMasterExtensions.Azure
         {
             StringBuilder p = new StringBuilder();
             p.Append(ParseServiceDefinition(this.ServiceDefinition)); // add the service definition path parameter
-            if ((null != this.WebRole) && !string.IsNullOrEmpty(this.WebRole.RoleName)) // add WebRole parameters
+            if ((null != this.WebRoleObj) && !string.IsNullOrEmpty(this.WebRoleObj.RoleName)) // add WebRole parameters
             {
-                p.AppendFormat(" /role:{0};{1}", this.WebRole.RoleName, this.ResolveLegacyPath(this.WebRole.RoleBinDirectory));
-                if (!string.IsNullOrEmpty(this.WebRole.RoleAssemblyName))
-                    p.AppendFormat(";{0}", this.WebRole.RoleAssemblyName);
+                p.AppendFormat(" /role:{0};{1}", this.WebRoleObj.RoleName, this.ResolveLegacyPath(this.WebRoleObj.RoleBinDirectory));
+                if (!string.IsNullOrEmpty(this.WebRoleObj.RoleAssemblyName))
+                    p.AppendFormat(";{0}", this.WebRoleObj.RoleAssemblyName);
             }
-            if ((null != this.WebRoleSite) && !string.IsNullOrEmpty(this.WebRoleSite.RoleName)) // add WebRole site parameters
+            if ((null != this.WebRoleSiteObj) && !string.IsNullOrEmpty(this.WebRoleSiteObj.RoleName)) // add WebRole site parameters
             {
-                p.AppendFormat(" /sites:{0};{1};{2}", this.WebRoleSite.RoleName, this.WebRoleSite.VirtualPath, this.ResolveLegacyPath(this.WebRoleSite.PhysicalPath));
+                p.AppendFormat(" /sites:{0};{1};{2}", this.WebRoleSiteObj.RoleName, this.WebRoleSiteObj.VirtualPath, this.ResolveLegacyPath(this.WebRoleSiteObj.PhysicalPath));
             }
-            if ((null != this.WorkerRole) && !string.IsNullOrEmpty(this.WorkerRole.RoleName)) // add Worker Role parameters
+            if ((null != this.WorkerRoleObj) && !string.IsNullOrEmpty(this.WorkerRoleObj.RoleName)) // add Worker Role parameters
             {
-                p.AppendFormat(" /role:{0};{1};{2}", this.WorkerRole.RoleName, this.ResolveLegacyPath(this.WorkerRole.RoleBinDirectory), this.WorkerRole.RoleAssemblyName);
+                p.AppendFormat(" /role:{0};{1};{2}", this.WorkerRoleObj.RoleName, this.ResolveLegacyPath(this.WorkerRoleObj.RoleBinDirectory), this.WorkerRoleObj.RoleAssemblyName);
             }
             if (!string.IsNullOrEmpty(this.RolePropertiesFileRoleName))
                 p.AppendFormat(" /rolePropertiesFile:{0};{1}", this.RolePropertiesFileRoleName, this.ResolveLegacyPath(this.RolePropertiesFile));
@@ -133,6 +138,13 @@ namespace Inedo.BuildMasterExtensions.Azure
                 p.Append(" " + this.AdditionalArguments);
 
             return p.ToString();
+        }
+
+        protected override void DeserializedMissingProperties(IReadOnlyDictionary<string, string> missingProperties)
+        {
+            this.WebRoleObj =  this.mungeProp<AzureRole>(missingProperties, "WebRole") ?? this.WebRoleObj;
+            this.WorkerRoleObj = this.mungeProp<AzureRole>(missingProperties, "WorkerRole") ?? this.WorkerRoleObj;
+            this.WebRoleSiteObj = this.mungeProp<AzureSite>(missingProperties, "WebRoleSite") ?? this.WebRoleSiteObj;
         }
     }
 }

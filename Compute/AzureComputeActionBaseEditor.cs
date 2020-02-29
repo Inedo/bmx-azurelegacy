@@ -50,9 +50,9 @@ namespace Inedo.BuildMasterExtensions.Azure
             if (Value.UsesWaitForCompletion)
                 Value.WaitForCompletion = chkWaitForCompletion.Checked;
             if (!string.IsNullOrEmpty(this.txtSubscriptionID.Text))
-                Value.ActionCredentials = new AzureAuthentication() { SubscriptionID = this.txtSubscriptionID.Text, CertificateName = this.txtCertificateName.Text };
+                Value.ActionCredentialsObj = new AzureAuthentication() { SubscriptionID = this.txtSubscriptionID.Text, CertificateName = this.txtCertificateName.Text };
             else
-                Value.ActionCredentials = null;
+                Value.ActionCredentialsObj = null;
             return Value;
         }
 
@@ -68,10 +68,10 @@ namespace Inedo.BuildMasterExtensions.Azure
             this.txtExtensionConfiguration.Text = action.ExtensionConfiguration;
             this.chkWarningsAsError.Checked = action.TreatWarningsAsError;
             this.chkWaitForCompletion.Checked = action.WaitForCompletion;
-            if (null != action.ActionCredentials)
+            if (null != action.ActionCredentialsObj)
             {
-                this.txtSubscriptionID.Text = action.ActionCredentials.SubscriptionID;
-                this.txtCertificateName.Text = action.ActionCredentials.CertificateName;
+                this.txtSubscriptionID.Text = action.ActionCredentialsObj.SubscriptionID;
+                this.txtCertificateName.Text = action.ActionCredentialsObj.CertificateName;
             }
         }
 

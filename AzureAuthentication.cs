@@ -2,19 +2,24 @@
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
+    [SlimSerializable]
     [Serializable]
-    [PersistFrom("Inedo.BuildMasterExtensions.Azure.AzureAuthentication,Azure")]
     public class AzureAuthentication
     {
+        [Persistent]
         public string SubscriptionID { get; set; }
 
+        [Persistent]
         public string PEMENcoded { get; set; }
 
+        [Persistent]
         public string CertificateName { get; set; }
 
+        [Persistent]
         public string ConfigFileName { get; set; }
 
         public bool HasCertificate => !string.IsNullOrEmpty(this.PEMENcoded) || !string.IsNullOrEmpty(this.CertificateName) || !string.IsNullOrEmpty(this.ConfigFileName);

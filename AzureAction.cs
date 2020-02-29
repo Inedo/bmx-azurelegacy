@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Xml;
@@ -13,7 +15,7 @@ using Inedo.Serialization;
 
 namespace Inedo.BuildMasterExtensions.Azure
 {
-    public abstract class AzureAction : RemoteActionBase
+    public abstract class AzureAction : RemoteActionBase, IMissingPersistentPropertyHandler
     {
         internal protected enum RequestType { Get, Post, Delete };
 
@@ -22,7 +24,31 @@ namespace Inedo.BuildMasterExtensions.Azure
         protected static XNamespace ns = "http://schemas.microsoft.com/windowsazure";
 
         [Persistent]
-        public AzureAuthentication ActionCredentials { get; set; }
+        public AzureAuthentication ActionCredentialsObj { get; set; }
+
+        private class RubbishBinder : SerializationBinder
+        {
+            Type type;
+            public RubbishBinder(Type t) => this.type = t;
+            public override Type BindToType(string assemblyName, string typeName) => this.type;
+        }
+        protected T mungeProp<T>(IReadOnlyDictionary<string, string> missingProperties, string propName)
+            where T : class
+        {
+            if (missingProperties.ContainsKey(propName))
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Binder = new RubbishBinder(typeof(T));
+                return formatter.Deserialize(new MemoryStream(Convert.FromBase64String(missingProperties[propName]))) as T;
+            }
+            return null;
+        }
+        protected virtual void DeserializedMissingProperties(IReadOnlyDictionary<string, string> missingProperties)
+        {
+            this.ActionCredentialsObj = this.mungeProp<AzureAuthentication>(missingProperties, "ActionCredentials") ?? this.ActionCredentialsObj;
+        }
+        void IMissingPersistentPropertyHandler.OnDeserializedMissingProperties(IReadOnlyDictionary<string, string> missingProperties) =>
+            this.DeserializedMissingProperties(missingProperties);
 
         protected AzureConfigurer Configurer
         {
@@ -48,7 +74,7 @@ namespace Inedo.BuildMasterExtensions.Azure
             }
         }
 
-        protected AzureAuthentication Credentials => this.ActionCredentials ?? this.Configurer.Credentials;
+        protected AzureAuthentication Credentials => this.ActionCredentialsObj ?? this.Configurer.Credentials;
 
         protected string ResolveLegacyPath(string legacyPath)
         {
